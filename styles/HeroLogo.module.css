@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@700&display=swap');
+
 .heroLogoWrap {
   display: flex;
   flex-direction: column;
@@ -78,7 +80,6 @@
   line-height: 1.1;
   margin-bottom: 0.1em;
   position: relative;
-  z-index: 2;
 }
 .brandSub {
   font-family: 'A Ryal Black Block', 'Cormorant Garamond', serif;
@@ -88,13 +89,9 @@
   text-transform: uppercase;
   font-weight: normal;
   margin-top: 0.2em;
-  letter-spacing: 0.28em;
   background: linear-gradient(90deg, var(--brand-gold) 40%, var(--brand-blush) 100%);
   -webkit-background-clip: text;
   background-clip: text;
-  -webkit-text-fill-color: transparent;
-  /* Removed text-fill-color for compatibility */
-  filter: drop-shadow(0 2px 8px #fffbe6cc);
 }
 .brandUnderline {
   width: 120px;
