@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from '../styles/Gallery.module.css';
 import PropTypes from 'prop-types';
+import Image from 'next/image';
 
 const images = [
   '/gallary/img (1).JPG',
@@ -44,11 +45,25 @@ export default function GalleryGrid({ glossy, ultraHQ, media }) {
           }, 10); }}>
             <div className={styles.mediaWrapper}>
               {isImage(src) ? (
-                <img src={src} alt={`Gallery image ${idx+1}`} className={glossy ? styles.glossy : ''} loading="lazy" />
+                <Image
+                  src={src.replace('.JPG', '.webp').replace('.jpg', '.webp')}
+                  alt={`Gallery image ${idx+1}`}
+                  width={800}
+                  height={1200}
+                  quality={90}
+                  style={{
+                    borderRadius: '1.2rem',
+                    boxShadow: '0 8px 36px #000b, 0 2px 10px #fffbe6cc',
+                    background: '#18141d',
+                    objectFit: 'cover',
+                  }}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  priority={idx < 3}
+                />
               ) : isVideo(src) ? (
                 <video src={src} className={styles.videoThumb} preload="metadata" muted playsInline />
               ) : null}
-              <div className={styles.logoMark}><img src="/logo.png" alt="MirrorAndMyst Logo" /></div>
+              <div className={styles.logoMark}><Image src="/logo.png" alt="MirrorAndMyst Logo" /></div>
             </div>
           </div>
         ))}
@@ -66,11 +81,26 @@ export default function GalleryGrid({ glossy, ultraHQ, media }) {
           >
             <button className={styles.lightboxNav} onClick={()=>goto(-1)}>&lt;</button>
             {isImage(galleryMedia[lightboxIdx]) ? (
-              <img src={galleryMedia[lightboxIdx]} alt="Fullscreen" className={styles.lightboxImg} />
+              <Image
+                src={galleryMedia[lightboxIdx].replace('.JPG', '.webp').replace('.jpg', '.webp')}
+                alt="Fullscreen"
+                width={1000}
+                height={1400}
+                quality={95}
+                className={styles.lightboxImg}
+                style={{
+                  borderRadius: '1.2rem',
+                  boxShadow: '0 8px 36px #000b, 0 2px 10px #fffbe6cc',
+                  background: '#18141d',
+                  objectFit: 'contain',
+                }}
+                sizes="100vw"
+                priority
+              />
             ) : isVideo(galleryMedia[lightboxIdx]) ? (
               <video src={galleryMedia[lightboxIdx]} controls autoPlay className={styles.lightboxImg} />
             ) : null}
-            <img src="/logo.png" alt="Logo" className={styles.lightboxLogo} />
+            <Image src="/logo.png" alt="Logo" className={styles.lightboxLogo} />
             <button className={styles.lightboxNav} onClick={()=>goto(1)}>&gt;</button>
             <button className={styles.lightboxClose} onClick={closeLightbox}>×</button>
             <button
