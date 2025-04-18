@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import styles from '@/styles/Admin.module.css';
+import styles from '../../styles/Admin.module.css'
 
 export default function Admin() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
