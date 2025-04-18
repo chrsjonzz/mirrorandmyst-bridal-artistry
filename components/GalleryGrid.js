@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from '../styles/Gallery.module.css';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
+import SpringLightbox from './SpringLightbox';
 
 const images = [
   '/gallary/img (1).JPG',
@@ -39,10 +40,10 @@ export default function GalleryGrid({ glossy, ultraHQ, media }) {
     <>
       <div className={styles.masonryGrid}>
         {galleryMedia.map((src, idx) => (
-          <div key={src} className={styles.masonryItem} onClick={() => { openLightbox(idx); setTimeout(() => {
-            const elem = document.querySelector('.'+styles.lightboxContent);
-            if (elem && elem.requestFullscreen) elem.requestFullscreen();
-          }, 10); }}>
+          <div key={src} className={styles.masonryItem} onClick={() => {
+            openLightbox(idx);
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+          }}>
             <div className={styles.mediaWrapper}>
               {isImage(src) ? (
                 <Image
@@ -63,57 +64,19 @@ export default function GalleryGrid({ glossy, ultraHQ, media }) {
               ) : isVideo(src) ? (
                 <video src={src} className={styles.videoThumb} preload="metadata" muted playsInline />
               ) : null}
-              <div className={styles.logoMark}><Image src="/logo.png" alt="MirrorAndMyst Logo" /></div>
+              <div className={styles.logoMark}><Image src="/logo.png" alt="MirrorAndMyst Logo" width={120} height={40} /></div>
             </div>
           </div>
         ))}
       </div>
       {lightboxIdx !== null && (
-        <div className={styles.lightbox} onClick={closeLightbox}>
-          <div
-            className={styles.lightboxContent}
-            onClick={e => e.stopPropagation()}
-            onDoubleClick={e => {
-              e.stopPropagation();
-              const elem = e.currentTarget.querySelector('.'+styles.lightboxImg);
-              if (elem && elem.requestFullscreen) elem.requestFullscreen();
-            }}
-          >
-            <button className={styles.lightboxNav} onClick={()=>goto(-1)}>&lt;</button>
-            {isImage(galleryMedia[lightboxIdx]) ? (
-              <Image
-                src={galleryMedia[lightboxIdx].replace('.JPG', '.webp').replace('.jpg', '.webp')}
-                alt="Fullscreen"
-                width={1000}
-                height={1400}
-                quality={95}
-                className={styles.lightboxImg}
-                style={{
-                  borderRadius: '1.2rem',
-                  boxShadow: '0 8px 36px #000b, 0 2px 10px #fffbe6cc',
-                  background: '#18141d',
-                  objectFit: 'contain',
-                }}
-                sizes="100vw"
-                priority
-              />
-            ) : isVideo(galleryMedia[lightboxIdx]) ? (
-              <video src={galleryMedia[lightboxIdx]} controls autoPlay className={styles.lightboxImg} />
-            ) : null}
-            <Image src="/logo.png" alt="Logo" className={styles.lightboxLogo} />
-            <button className={styles.lightboxNav} onClick={()=>goto(1)}>&gt;</button>
-            <button className={styles.lightboxClose} onClick={closeLightbox}>×</button>
-            <button
-              className={styles.lightboxFullscreen}
-              title="Go Fullscreen"
-              onClick={e => {
-                e.stopPropagation();
-                const elem = e.currentTarget.parentElement.querySelector('.'+styles.lightboxImg);
-                if (elem && elem.requestFullscreen) elem.requestFullscreen();
-              }}
-            >⛶</button>
-          </div>
-        </div>
+        <SpringLightbox
+          images={galleryMedia.map(src => src.replace('.JPG', '.webp').replace('.jpg', '.webp'))}
+          currentIndex={lightboxIdx}
+          onClose={() => { closeLightbox(); document.body.style.overflow = ''; }}
+          onMovePrev={() => goto(-1)}
+          onMoveNext={() => goto(1)}
+        />
       )}
     </>
   );

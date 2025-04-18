@@ -76,7 +76,7 @@ export default function HeroLogo() {
       </div>
       <div className={styles.textWrap}>
         <span className={styles.brandMain} style={{fontFamily: 'Amsterdam, A Quiet Sleep, cursive', fontSize: '3.2rem', letterSpacing: '0.02em'}}>
-          MirrorAndMist
+          MirrorAndMyst
         </span>
         <svg className={styles.brandUnderline} viewBox="0 0 120 16" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M5 10 Q60 0 115 10" stroke="url(#goldLine)" strokeWidth="3" fill="none"/>
