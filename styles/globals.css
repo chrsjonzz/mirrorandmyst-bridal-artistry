@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@400;700&family=Montserrat:wght@400;600&display=swap');
+
+:root {
+  --brand-gold: #bfa76a;
+  --brand-blush: #ffe3ec;
+  --brand-deeppurple: #6e3b6e;
+  --brand-white: #fffbe6;
+  --brand-dark: #3d1b3d;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  background: #181818;
+  color: #fff;
+}
+
+body {
+  font-family: 'Montserrat', Arial, sans-serif;
+  color: var(--brand-dark);
+  background: var(--brand-white);
+  font-size: 1.05em;
+  line-height: 1.7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, .title, .footerBlessing {
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+  color: var(--brand-gold);
+  letter-spacing: 2.2px;
+  font-weight: 900;
+  text-shadow: 0 2px 18px var(--brand-white), 0 1px 0 #fff8;
+}
+
+h2, h3, h4, .sectionTitle {
+  font-family: 'Cormorant Garamond', 'Cinzel', serif;
+  color: var(--brand-deeppurple);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a, .btn {
+  color: var(--brand-gold);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s, background 0.2s;
+}
+a:hover, .btn:hover {
+  color: #fff;
+  background: linear-gradient(90deg, var(--brand-gold) 60%, var(--brand-blush) 100%);
+  border-radius: 0.5em;
+}
+
+.sectionDivider {
+  width: 100%;
+  height: 36px;
+  background: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 2.5em 0 2em 0;
+}
+.sectionDivider svg {
+  width: 100%;
+  height: 36px;
+  display: block;
+}
+
+.logoSeal {
+  display: inline-block;
+  animation: logoShimmer 2.5s linear infinite alternate;
+  filter: drop-shadow(0 2px 18px var(--brand-gold));
+}
+@keyframes logoShimmer {
+  0% { filter: drop-shadow(0 2px 18px var(--brand-gold)); }
+  60% { filter: drop-shadow(0 2px 28px #fffbe6) brightness(1.08); }
+  100% { filter: drop-shadow(0 2px 18px var(--brand-gold)); }
+}
+
+@font-face {
+  font-family: 'Amsterdam';
+  src: url('/fonts/Amsterdam.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'A Ryal Black Block';
+  src: url('/fonts/a_ryal_black_block.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'A Quiet Sleep';
+  src: url('/fonts/a_quiet_sleep.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}

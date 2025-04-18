@@ -1,0 +1,145 @@
+.heroLogoWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 2.5rem;
+  margin-bottom: 2.5rem;
+  position: relative;
+  background: linear-gradient(135deg, #181818 60%, #232323 100%);
+  border-radius: 2.2rem;
+  box-shadow: 0 6px 48px #000b, 0 1.5px 0 #fff1 inset;
+  padding: 2.5rem 2.2rem 2.2rem 2.2rem;
+  max-width: 600px;
+  width: 100%;
+  transition: box-shadow 0.3s;
+}
+.heroLogoWrap:hover {
+  box-shadow: 0 10px 64px #000e, 0 2px 0 #fff2 inset;
+}
+.palmWrap {
+  width: 340px;
+  height: 120px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin-bottom: -2.2rem;
+  z-index: 2;
+  position: relative;
+}
+.palmLeaf {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 2px 18px #bfa76a55);
+  animation: palmSway 5s ease-in-out infinite alternate;
+}
+.palmAccent {
+  position: absolute;
+  left: 60%;
+  top: 60%;
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+  animation: sparkleTwinkle 2.8s infinite alternate;
+  opacity: 0.8;
+}
+@keyframes palmSway {
+  0% { transform: rotate(-3deg) scale(1); }
+  100% { transform: rotate(3deg) scale(1.03); }
+}
+@keyframes sparkleTwinkle {
+  0% { opacity: 0.6; filter: blur(0.5px); }
+  80% { opacity: 1; filter: blur(0); }
+  100% { opacity: 0.6; filter: blur(0.5px); }
+}
+.animatedLeaf {
+  animation: swayLeaf 2.5s ease-in-out infinite alternate;
+  transform-origin: 60% 60%;
+}
+@keyframes swayLeaf {
+  0% { transform: rotate(-4deg) scale(1); }
+  50% { transform: rotate(6deg) scale(1.05); }
+  100% { transform: rotate(-4deg) scale(1); }
+}
+.textWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0.2rem;
+  position: relative;
+}
+.brandMain {
+  font-family: 'Amsterdam', 'A Quiet Sleep', cursive;
+  font-size: 3.2rem;
+  color: var(--brand-gold);
+  letter-spacing: 0.12em;
+  text-shadow: 0 2px 14px #fffbe6, 0 1px 0 #fff8, 0 0 6px #bfa76a44;
+  font-weight: normal;
+  line-height: 1.1;
+  margin-bottom: 0.1em;
+  position: relative;
+  z-index: 2;
+}
+.brandSub {
+  font-family: 'A Ryal Black Block', 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  color: var(--brand-deeppurple);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  font-weight: normal;
+  margin-top: 0.2em;
+  letter-spacing: 0.28em;
+  background: linear-gradient(90deg, var(--brand-gold) 40%, var(--brand-blush) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* Removed text-fill-color for compatibility */
+  filter: drop-shadow(0 2px 8px #fffbe6cc);
+}
+.brandUnderline {
+  width: 120px;
+  height: 16px;
+  margin-top: -0.3em;
+  margin-bottom: 0.6em;
+  display: block;
+}
+.floralFrame {
+  position: absolute;
+  top: 0.2rem;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  display: flex;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 5;
+}
+.floralLeft {
+  width: 54px;
+  height: 90px;
+  opacity: 0.92;
+  filter: drop-shadow(0 2px 8px #bfa76a33);
+  animation: floralSwayL 6s ease-in-out infinite alternate;
+}
+.floralRight {
+  width: 54px;
+  height: 90px;
+  opacity: 0.92;
+  filter: drop-shadow(0 2px 8px #bfa76a33);
+  animation: floralSwayR 6s ease-in-out infinite alternate;
+}
+@keyframes floralSwayL {
+  0% { transform: rotate(-3deg) scale(1); }
+  100% { transform: rotate(2deg) scale(1.06); }
+}
+@keyframes floralSwayR {
+  0% { transform: rotate(3deg) scale(1); }
+  100% { transform: rotate(-2deg) scale(1.06); }
+}
+@media (max-width: 600px) {
+  .heroLogoWrap { margin-top: 1.2rem; margin-bottom: 1.2rem; }
+  .palmWrap { width: 210px; height: 70px; margin-bottom: -1.1rem; }
+  .brandMain { font-size: 1.6rem; }
+  .brandSub { font-size: 0.8rem; }
+  .brandUnderline { width: 70px; height: 8px; }
+}
