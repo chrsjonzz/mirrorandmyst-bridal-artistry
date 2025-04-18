@@ -146,15 +146,59 @@ function getRelevantFollowUps(lastBotText, shownFollowUps) {
   return topicQs.slice(0, 3);
 }
 
+// Add: AI-powered response via /api/ai-chat (Groq)
+async function getAIResponse(userText) {
+  try {
+    const res = await fetch('/api/ai-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText })
+    });
+    const data = await res.json();
+    if (data.reply) return { text: data.reply, source: 'MirrorAndMyst AI Assistant (Groq)' };
+    if (data.error) return { text: 'Sorry, the AI could not answer your question. (' + (data.detail || data.error) + ')', source: 'MirrorAndMyst AI Assistant (Groq)' };
+    return { text: 'Sorry, I could not find an answer. Please try rephrasing your question!', source: 'MirrorAndMyst AI Assistant (Groq)' };
+  } catch (e) {
+    return { text: 'Sorry, there was a problem connecting to the bridal assistant. Please try again later.', source: 'MirrorAndMyst AI Assistant (Groq)' };
+  }
+}
+
+const sensitiveQuestions = [
+  /how many (years|long).*industry/i,
+  /your rating/i,
+  /how many (awards|certificates)/i,
+  /are you certified/i,
+  /how long have you been/i,
+  /how experienced are you/i,
+  /what is your experience/i,
+  /how many clients/i,
+  /how many weddings/i,
+  /how many year/i,
+  /how many years/i,
+  /what is you rating/i,
+  /what's your rating/i,
+  /what is your rating/i,
+  /how many year are you/i,
+  /how many year have you/i
+];
+
+function needsProfessionalRedirect(userInput) {
+  return sensitiveQuestions.some(rx => rx.test(userInput));
+}
+
 export default function Chatbot() {
   const [open, setOpen] = useState(false);
+  const [fullSize, setFullSize] = useState(false);
   const [messages, setMessages] = useState([
-    { from: 'bot', text: friendlyResponses[0], time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) }
+    { from: 'bot', text: friendlyResponses[0], time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), source: null }
   ]);
   const [shownFollowUps, setShownFollowUps] = useState([]); // Track shown follow-ups
   const [input, setInput] = useState('');
   const [typing, setTyping] = useState(false);
+  const [canUndo, setCanUndo] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const windowRef = useRef(null);
 
   useEffect(() => {
     if (open && messagesEndRef.current) {
@@ -162,25 +206,76 @@ export default function Chatbot() {
     }
   }, [messages, open]);
 
-  const handleSend = (e) => {
+  useEffect(() => {
+    if (open && windowRef.current) {
+      windowRef.current.focus();
+    }
+  }, [open, fullSize]);
+
+  // Keyboard handler for Ctrl+A selection
+  const handleKeyDown = (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'a') {
+      if (document.activeElement === windowRef.current) {
+        e.preventDefault();
+        if (messagesContainerRef.current) {
+          // Select all text in the messages div
+          const range = document.createRange();
+          range.selectNodeContents(messagesContainerRef.current);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        }
+      }
+    }
+  };
+
+  // --- UI Sections ---
+  // Quick Actions (always visible)
+  const quickActions = [
+    { label: 'Book a Trial', action: () => handleQuickReply('Book a Trial') },
+    { label: 'FAQs', action: () => handleQuickReply('FAQs') },
+    { label: 'See Portfolio', action: () => handleQuickReply('See Portfolio') },
+    { label: 'Contact Artist', action: () => handleQuickReply('Contact Artist') },
+  ];
+
+  // Updated: Use AI for open-ended user input
+  const handleSend = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
     const userMsg = { from: 'user', text: input, time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) };
     setMessages([...messages, userMsg]);
     setTyping(true);
-    setTimeout(() => {
-      const proAnswer = getProBeautyAnswer(input);
+    setInput('');
+
+    // Check if the user's question is sensitive (robust: lowercased, trimmed)
+    if (needsProfessionalRedirect(input.trim().toLowerCase())) {
       setMessages(msgs => [
         ...msgs,
         {
           from: 'bot',
-          text: proAnswer || defaultWeddingTips[Math.floor(Math.random()*defaultWeddingTips.length)],
+          text: "As an AI assistant for MirrorAndMyst, I don't have personal experience, but our team has years of expertise in the bridal industry. For the most accurate information about our experience or ratings, please visit our About page or contact us directly!",
+          source: null,
           time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
         }
       ]);
       setTyping(false);
-    }, 900);
-    setInput('');
+      setCanUndo(true);
+      return;
+    }
+
+    // Only call AI if not a sensitive question
+    const aiReplyObj = await getAIResponse(input);
+    setMessages(msgs => [
+      ...msgs,
+      {
+        from: 'bot',
+        text: aiReplyObj.text,
+        source: aiReplyObj.source,
+        time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      }
+    ]);
+    setTyping(false);
+    setCanUndo(true);
   };
 
   const handleQuickReply = (reply) => {
@@ -190,6 +285,7 @@ export default function Chatbot() {
     setTyping(true);
     setTimeout(() => {
       let botResponse;
+      let source = null;
       if (reply === 'Contact Artist') {
         botResponse = contactArtistAnswer;
       } else if (reply === 'FAQs') {
@@ -199,31 +295,92 @@ export default function Chatbot() {
       } else if (reply === 'Book a Trial') {
         botResponse = bookTrialAnswer;
       } else {
-        const proAnswer = getProBeautyAnswer(reply);
-        botResponse = proAnswer || defaultWeddingTips[Math.floor(Math.random()*defaultWeddingTips.length)];
+        const qa = findBestQA(reply);
+        if (qa) {
+          botResponse = qa.answer;
+          source = qa.source;
+        } else {
+          const proAnswer = getProBeautyAnswer(reply);
+          botResponse = proAnswer;
+        }
       }
       setMessages(msgs => [
         ...msgs,
         {
           from: 'bot',
           text: botResponse,
+          source,
           time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
         }
       ]);
       setTyping(false);
+      setCanUndo(true);
     }, 900);
+  };
+
+  const handleUndo = () => {
+    setMessages([
+      { from: 'bot', text: friendlyResponses[0], time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), source: null }
+    ]);
+    setShownFollowUps([]);
+    setCanUndo(false);
   };
 
   return (
     <div className={styles.chatbot}>
+      {open && fullSize && (
+        <div className={styles.overlay + ' ' + styles.overlayActive} onClick={() => setFullSize(false)} />
+      )}
       {open ? (
-        <div className={styles.window}>
-          <div className={styles.header} onClick={() => setOpen(false)}>
+        <div
+          ref={windowRef}
+          className={fullSize ? styles.fullSizeWindow : styles.window}
+          style={
+            fullSize
+              ? {
+                  position: 'fixed',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '98vw',
+                  height: '96vh',
+                  maxWidth: 540,
+                  maxHeight: '98vh',
+                  overflow: 'hidden',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  zIndex: 2000
+                }
+              : { resize: 'both', overflow: 'auto', minWidth: 320, minHeight: 420 }
+          }
+          tabIndex={0}
+          onKeyDown={handleKeyDown}
+        >
+          {/* Header */}
+          <div className={styles.header}>
             <Image src="/logo.png" alt="Chatbot Avatar" width={36} height={36} className={styles.headerAvatar} />
             <span style={{marginLeft: '0.5rem'}}>MirrorAndMyst Assistant</span>
-            <span className={styles.close}>×</span>
+            <span className={styles.headerButtons}>
+              <button onClick={() => setFullSize(f => !f)} style={{marginRight: 8, background: 'none', border: 'none', fontSize: '1.1em', cursor: 'pointer'}} title={fullSize ? 'Restore size' : 'Full size'}>
+                {fullSize ? '🗗' : '🗖'}
+              </button>
+              <span className={styles.close} onClick={() => setOpen(false)}>×</span>
+            </span>
           </div>
-          <div className={styles.messages} style={{overflowY: 'auto', flex: 1, minHeight: 120}}>
+
+          {/* Quick Actions */}
+          <div className={styles.quickActions}>
+            {quickActions.map((qa, idx) => (
+              <button key={idx} className={styles.quickActionBtn} onClick={qa.action}>{qa.label}</button>
+            ))}
+          </div>
+
+          {/* Messages */}
+          <div
+            className={styles.messages}
+            style={{minHeight: '160px', flex: 1, display: 'flex', flexDirection: 'column'}}
+            ref={messagesContainerRef}
+          >
             {messages.map((msg, idx) => (
               msg.from === 'bot' ? (
                 <div key={idx} className={styles.botMsg}>
@@ -231,16 +388,7 @@ export default function Chatbot() {
                   <div>
                     <div style={{background: '#fff', color: '#ad8b4c', borderRadius: '1.1em', padding: '0.7em 1em', marginBottom: 2, boxShadow: '0 1px 4px #ad8b4c11'}}>{msg.text}</div>
                     <div style={{fontSize: '0.72em', color: '#bfa76a', marginLeft: 2}}>{msg.time}</div>
-                    {/* Show follow-up suggestions only after the latest bot message */}
-                    {idx === messages.length - 1 && (
-                      <div style={{marginTop: 6, fontSize: '0.85em', color: '#bfa76a', opacity: 0.88, display: 'flex', flexWrap: 'wrap', gap: '0.5em'}}>
-                        <span style={{fontWeight: 500, opacity: 0.7}}>You can also ask:</span>
-                        {getRelevantFollowUps(msg.text, shownFollowUps).map((q, i) => (
-                          <button key={i} style={{background: 'none', border: 'none', color: '#ad8b4c', fontSize: '0.92em', cursor: 'pointer', textDecoration: 'underline', opacity: 0.85, padding: 0, margin: 0}}
-                            onClick={() => handleQuickReply(q)}>{q}</button>
-                        ))}
-                      </div>
-                    )}
+                    {msg.source && <div style={{fontSize: '0.7em', color: '#bfa76a', marginLeft: 2, marginTop: 2}}>Source: {msg.source}</div>}
                   </div>
                 </div>
               ) : (
@@ -257,21 +405,47 @@ export default function Chatbot() {
             )}
             <div ref={messagesEndRef} />
           </div>
-          <div className={styles.quickReplies}>
-            {quickReplies.map((reply, idx) => (
-              <button key={idx} onClick={() => handleQuickReply(reply)}>{reply}</button>
-            ))}
-          </div>
-          <form className={styles.inputBar} onSubmit={handleSend} style={{display: 'flex', gap: 6}}>
-            <input
-              type="text"
-              placeholder="Type your message..."
+
+          {/* Suggested/Follow-Up Questions */}
+          {messages.length > 0 && getRelevantFollowUps(messages[messages.length-1].text, shownFollowUps).length > 0 && (
+            <div className={styles.suggestedFollowUps}>
+              <div style={{marginBottom: 4, color: '#bfa76a', fontSize: '0.83em'}}>You can also ask:</div>
+              <div style={{display: 'flex', flexWrap: 'wrap', gap: '0.5em', justifyContent: 'center'}}>
+                {getRelevantFollowUps(messages[messages.length-1].text, shownFollowUps).map((q, i) => (
+                  <button key={i} className={styles.suggestedBtn} onClick={() => handleQuickReply(q)}>{q}</button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Input Bar */}
+          <form onSubmit={handleSend} className={styles.inputBar}>
+            <textarea
               value={input}
-              onChange={e => setInput(e.target.value)}
-              style={{flex: 1}}
+              onChange={e => {
+                setInput(e.target.value);
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+              }}
+              onInput={e => {
+                e.target.style.height = 'auto';
+                e.target.style.height = (e.target.scrollHeight) + 'px';
+              }}
+              placeholder="Type your message..."
+              className={styles.input}
+              rows={1}
+              style={{resize: 'none', overflow: 'hidden'}}
+              required
             />
-            <button type="submit">Send</button>
+            <button type="submit" aria-label="Send">
+              <span role="img" aria-label="Send">➤</span>
+            </button>
           </form>
+
+          {/* AI Disclaimer Note */}
+          <div className={styles.aiDisclaimer} style={{fontSize: '0.8em', color: '#bfa76a', opacity: 0.8, padding: '0.5em 1em'}}>
+            <span>Note: This assistant uses AI and may occasionally provide incorrect or outdated information. Please verify important details independently.</span>
+          </div>
         </div>
       ) : (
         <button className={styles.fab} onClick={() => setOpen(true)}>
