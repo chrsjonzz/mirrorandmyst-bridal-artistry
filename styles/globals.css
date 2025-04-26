@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Cormorant+Garamond:wght@400;700&family=Montserrat:wght@400;600&display=swap');
+@import url('/fonts.css');
 
 :root {
   --brand-gold: #bfa76a;
@@ -7,6 +7,10 @@
   --brand-deeppurple: #6e3b6e;
   --brand-white: #fffbe6;
   --brand-dark: #3d1b3d;
+  --font-header: 'Great Vibes', cursive;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Poppins', Arial, sans-serif;
+  --font-script: 'Amsterdam', 'A Quiet Sleep', cursive;
 }
 
 html {
@@ -16,13 +20,12 @@ html {
 html, body {
   padding: 0;
   margin: 0;
-  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  font-family: var(--font-body);
   background: #181818;
   color: #fff;
 }
 
 body {
-  font-family: 'Montserrat', Arial, sans-serif;
   color: var(--brand-dark);
   background: var(--brand-white);
   font-size: 1.05em;
@@ -33,19 +36,28 @@ body {
   box-sizing: border-box;
 }
 
-h1, .title, .footerBlessing {
-  font-family: 'Cinzel', 'Cormorant Garamond', serif;
+.headerLogo, .mainHeader, .brandHeader {
+  font-family: var(--font-header);
+  font-size: 2.7rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--brand-deeppurple);
+}
+
+h1, h2, h3, h4, h5, h6, .heading, .sectionTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.01em;
   color: var(--brand-gold);
-  letter-spacing: 2.2px;
-  font-weight: 900;
   text-shadow: 0 2px 18px var(--brand-white), 0 1px 0 #fff8;
 }
 
 h2, h3, h4, .sectionTitle {
-  font-family: 'Cormorant Garamond', 'Cinzel', serif;
   color: var(--brand-deeppurple);
-  font-weight: 700;
-  letter-spacing: 1px;
+}
+
+body, p, li, span, a, input, textarea, button {
+  font-family: var(--font-body);
 }
 
 a {
@@ -89,6 +101,94 @@ a:hover, .btn:hover {
   0% { filter: drop-shadow(0 2px 18px var(--brand-gold)); }
   60% { filter: drop-shadow(0 2px 28px #fffbe6) brightness(1.08); }
   100% { filter: drop-shadow(0 2px 18px var(--brand-gold)); }
+}
+
+.sectionScript, .sectionScript h2, .sectionScript .sectionTitle {
+  font-family: var(--font-script);
+  font-size: 2.85rem;
+  font-weight: 500;
+  letter-spacing: 0.045em;
+  color: #bfa76a;
+  background: linear-gradient(90deg, #fffbe6 0%, #bfa76a 50%, #ffe3ec 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.2em;
+  margin-top: 0.4em;
+  display: inline-block;
+  /* Stronger visibility enhancements */
+  text-shadow:
+    0 3px 16px #fffbe6,
+    0 2px 0 #fff8,
+    0 2px 12px #bfa76a99,
+    1px 1px 2px #232323cc,
+    -1px -1px 2px #232323cc,
+    0 4px 24px #23232399;
+  -webkit-text-stroke: 1.2px #232323cc;
+  text-stroke: 1.2px #232323cc;
+}
+
+.subjectBodyFont, .subjectBodyFont *, .subjectBodyFont p, .subjectBodyFont ul, .subjectBodyFont li, .subjectBodyFont b, .subjectBodyFont strong, .subjectBodyFont a {
+  font-family: 'Playfair Display', serif !important;
+  font-size: 1.18rem;
+  font-weight: 400;
+  color: #18171a !important;
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  background: none !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+  background-clip: unset !important;
+  text-shadow: none !important;
+  margin-bottom: 0.7em;
+  margin-top: 0.2em;
+  transition: font-size 0.2s, line-height 0.2s;
+}
+
+.signatureList {
+  font-size: 1.13rem;
+  line-height: 1.85;
+  padding-left: 1.1em;
+  margin-bottom: 0;
+}
+.signatureMainCat {
+  font-size: 1.19rem;
+  font-weight: 600;
+  margin-top: 1em;
+  letter-spacing: 0.01em;
+  color: #6e3b6e;
+}
+.signatureSubList {
+  font-size: 1.04rem;
+  font-weight: 400;
+  margin-top: 0.37em;
+  margin-bottom: 0.1em;
+  color: #18171a;
+  padding-left: 1.2em;
+}
+@media (max-width: 900px) {
+  .signatureList { font-size: 1.02rem; }
+  .signatureMainCat { font-size: 1.09rem; }
+  .signatureSubList { font-size: 0.97rem; }
+}
+@media (max-width: 600px) {
+  .signatureList { font-size: 0.96rem; }
+  .signatureMainCat { font-size: 1.01rem; }
+  .signatureSubList { font-size: 0.91rem; }
+}
+
+@media (max-width: 900px) {
+  .subjectBodyFont, .subjectBodyFont *, .subjectBodyFont p, .subjectBodyFont ul, .subjectBodyFont li {
+    font-size: 1.07rem !important;
+    line-height: 1.7 !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .subjectBodyFont, .subjectBodyFont *, .subjectBodyFont p, .subjectBodyFont ul, .subjectBodyFont li {
+    font-size: 0.98rem !important;
+    line-height: 1.55 !important;
+  }
 }
 
 @font-face {

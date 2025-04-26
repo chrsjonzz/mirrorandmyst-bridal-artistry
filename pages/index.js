@@ -72,15 +72,12 @@ export default function Home() {
         </div>
         <h1
           className={`${styles.title} ${styles.hqText} ${styles.headerLogoAnim} ${styles.shimmer}`}
-          style={{fontFamily: 'Pacifico, cursive'}}
+          style={{fontFamily: "'Playfair Display', serif", lineHeight: 1.08}}
           onMouseEnter={(e) => {
             const el = e.currentTarget;
-            // Remove any previous animation classes
             for (let i = 1; i <= 7; i++) el.classList.remove(styles[`headerLogo-spin${i}`]);
-            // Pick random animation
             const idx = Math.floor(Math.random() * 7) + 1;
             el.classList.add(styles[`headerLogo-spin${idx}`]);
-            // Remove the animation class after animation ends so it can be retriggered
             const removeAnim = () => {
               el.classList.remove(styles[`headerLogo-spin${idx}`]);
               el.removeEventListener('animationend', removeAnim);
@@ -88,12 +85,12 @@ export default function Home() {
             el.addEventListener('animationend', removeAnim);
           }}
         >
-          MirrorAndMyst (BRIDAL ARTISTRY)
+          MirrorAndMyst<br/>
+          <span style={{fontSize: '0.72em', verticalAlign: 'middle', letterSpacing: '0.11em', color: '#bfa76a', fontWeight: 500}}>(BRIDAL ARTISTRY)</span>
         </h1>
-        <p className={styles.tagline + ' ' + styles.hqText}>Mirror And Myst Bridal Artistry</p>
+        <p className={styles.tagline + ' ' + styles.hqText + ' taglineSlay'}>Styled to Slay. <span style={{whiteSpace: 'nowrap'}}>Designed to Stay.</span></p>
         <nav className={styles.nav}>
           <Link href="#about">About</Link>
-          <Link href="#services">Services</Link>
           <Link href="#gallery">Gallery</Link>
           <Link href="#signature">Signature</Link>
           <Link href="#engagement">Engagement</Link>
@@ -104,9 +101,9 @@ export default function Home() {
         <HeroLogo />
       </div>
       <main>
-        {['about','services','gallery','signature','engagement','contact'].map((id, idx, arr) => (
+        {['about','gallery','signature','engagement','contact'].map((id, idx, arr) => (
           <>
-            {id === 'services' && (
+            {id === 'signature' && (
               <div style={{width:'100%', display:'flex', justifyContent:'center', alignItems:'flex-end', position:'relative', minHeight:0, margin:'-18px 0 0 0', pointerEvents:'none', zIndex:2}}>
                 <div style={{position:'relative', top:'-36px'}}>
                   <ParallaxWatermark shape="heart" />
@@ -157,33 +154,81 @@ export default function Home() {
 function SectionAnimated({ id, idx, styles }) {
   const [visible, setVisible] = useState(false);
   const sectionTitles = {
-    about: 'About Us',
-    services: 'Services Offered',
-    gallery: 'Our Gallery',
-    signature: 'Signature Services for Women',
-    engagement: 'Engagement',
-    contact: 'Contact Us',
+    about: (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', width:'fit-content', margin:'0 auto'}}>
+        <span className="sectionScript" style={{display:'block', textAlign:'center', lineHeight:1}} id={id+"-title"}>About Us</span>
+        <SectionFlowerUnderline targetId={id+"-title"} />
+      </div>
+    ),
+    gallery: (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', width:'fit-content', margin:'0 auto'}}>
+        <span className="sectionScript" style={{display:'block', textAlign:'center', lineHeight:1}} id={id+"-title"}>Our Gallery</span>
+        <SectionFlowerUnderline targetId={id+"-title"} />
+      </div>
+    ),
+    signature: (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', width:'fit-content', margin:'0 auto'}}>
+        <span className="sectionScript" style={{display:'block', textAlign:'center', lineHeight:1}} id={id+"-title"}>Bridal Package</span>
+        <SectionFlowerUnderline targetId={id+"-title"} />
+      </div>
+    ),
+    engagement: (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', width:'fit-content', margin:'0 auto'}}>
+        <span className="sectionScript" style={{display:'block', textAlign:'center', lineHeight:1}} id={id+"-title"}>Engagement</span>
+        <SectionFlowerUnderline targetId={id+"-title"} />
+      </div>
+    ),
+    contact: (
+      <div style={{display:'flex', flexDirection:'column', alignItems:'center', width:'fit-content', margin:'0 auto'}}>
+        <span className="sectionScript" style={{display:'block', textAlign:'center', lineHeight:1}} id={id+"-title"}>Contact Us</span>
+        <SectionFlowerUnderline targetId={id+"-title"} />
+      </div>
+    ),
   };
   const sectionContent = {
-    about: <p>At MirrorAndMyst (BRIDAL ARTISTRY), we celebrate femininity, beauty, and individuality. Our mission is to empower every client to feel stunning and confident, whether it's their wedding day or a casual outing. Specializing in beauty care, hairstyling, and bridal makeup, we ensure every look is a perfect blend of elegance and creativity.</p>,
-    services: <ul><li><b>Bridal Makeup:</b> Traditional, Contemporary Glam, Destination Wedding Packages</li><li><b>Hairstyling:</b> Braids, Updos, Curls, Saree Draping</li><li><b>Everyday Glow:</b> Day-to-Night, Office-Ready, Natural Glam</li></ul>,
-    gallery: <><p>Feature: <b>Bride of the Month</b> | Trending Looks: Glass Skin, Dewy Glow, Bold Smokey Eye</p><GalleryGrid glossy ultraHQ /></>,
-    signature: <ul><li>Customized Bridal Packages (makeup, hairstyling, saree draping)</li><li>Luxury Pre-Wedding Skin Rituals</li><li>Personalized Consultation & Trials</li></ul>,
-    engagement: <ul><li>Free bridal trials for the first 5 bookings every month</li><li>Engagement & Pre-Wedding Photoshoot Looks</li></ul>,
+    about: <p className="subjectBodyFont">At MirrorAndMyst (BRIDAL ARTISTRY), we celebrate femininity, beauty, and individuality. Our mission is to empower every client to feel stunning and confident, whether it's their wedding day or a casual outing. Specializing in beauty care, hairstyling, and bridal makeup, we ensure every look is a perfect blend of elegance and creativity.</p>,
+    gallery: <div className="subjectBodyFont"><p>Feature: <b>Bride of the Month</b> | Trending Looks: Glass Skin, Dewy Glow, Bold Smokey Eye</p><GalleryGrid glossy ultraHQ /></div>,
+    signature: (
+      <ul className="subjectBodyFont signatureList" style={{ lineHeight: '1.85', fontSize: '1.11rem', paddingLeft: '1.1em', marginBottom: 0 }}>
+        <li className="signatureMainCat">Personalized Consultation & Trials</li>
+        <li className="signatureMainCat">Traditional</li>
+        <li className="signatureMainCat">HD or Air Brush make-up</li>
+        <li className="signatureMainCat">Hairstyling</li>
+        <li className="signatureMainCat">Draping (Saree/Dupatta)</li>
+      </ul>
+    ),
+    engagement: (
+      <>
+        <ul className="subjectBodyFont signatureList" style={{ lineHeight: '1.85', fontSize: '1.11rem', paddingLeft: '1.1em', marginBottom: 0 }}>
+          <li className="signatureMainCat">Full-Face Makeup</li>
+          <li className="signatureMainCat">Hairstyling</li>
+          <li className="signatureMainCat">Outfit Styling/Draping</li>
+          <li className="signatureMainCat">Lashes</li>
+        </ul>
+        <div style={{marginTop: '1.2em', textAlign: 'center'}}>
+          <span className="sectionScript" style={{fontSize: '1.22em', color: '#6e3b6e', fontWeight: 700, letterSpacing: '0.04em', display: 'inline-block', marginBottom: '0.35em'}}>Party/Guest Makeup</span>
+        </div>
+      </>
+    ),
     contact: (
-      <div style={{textAlign:'center', fontSize:'1.1rem'}}>
-        <div style={{marginBottom:'0.8em'}}>
+      <div className="subjectBodyFont" style={{ textAlign: 'center', fontSize: '1.1rem' }}>
+        <div style={{ marginBottom: '0.8em' }}>
           <b>Contact:</b> Princy Lydia
         </div>
-        <div style={{marginBottom:'0.8em'}}>
-          <b>Phone:</b> <a href={`tel:${CONTACT_PHONE_INTL}`} style={{color:'var(--brand-gold)', textDecoration:'none'}}>{CONTACT_PHONE}</a>
+        <div style={{ marginBottom: '0.8em' }}>
+          <b>Phone:</b> <a href={`tel:${CONTACT_PHONE_INTL}`} style={{ color: 'var(--brand-gold)', textDecoration: 'none' }}>{CONTACT_PHONE}</a>
         </div>
-        <div style={{marginBottom:'0.8em'}}>
-          <b>Email:</b> <a href={`mailto:${CONTACT_EMAIL}`} style={{color:'var(--brand-gold)', textDecoration:'none'}}>{CONTACT_EMAIL}</a>
+        <div style={{ marginBottom: '0.8em' }}>
+          <b>Email:</b> <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: 'var(--brand-gold)', textDecoration: 'none' }}>{CONTACT_EMAIL}</a>
         </div>
         <div>
-          <a href={`https://wa.me/${CONTACT_PHONE_INTL.replace('+','')}`} target="_blank" rel="noopener" style={{color:'var(--brand-blush)', fontWeight:'bold', textDecoration:'none', border:'1.5px solid var(--brand-gold)', borderRadius:'2em', padding:'0.32em 1.2em', background:'linear-gradient(90deg,#fffbe6 0%, #ffe3ec 100%)', boxShadow:'0 2px 18px #bfa76a44', transition:'all 0.25s'}} onMouseOver={e=>e.currentTarget.style.background='linear-gradient(90deg,#ffe3ec 0%, #fffbe6 100%)'} onMouseOut={e=>e.currentTarget.style.background='linear-gradient(90deg,#fffbe6 0%, #ffe3ec 100%)'}>
-            WhatsApp Admin
+          <a
+            href={`https://wa.me/${CONTACT_PHONE_INTL.replace('+', '')}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: 'var(--brand-gold)', textDecoration: 'none' }}
+          >
+            WhatsApp
           </a>
         </div>
       </div>
@@ -207,18 +252,45 @@ function SectionAnimated({ id, idx, styles }) {
       className={`${styles.section} ${styles.hqText} ${styles.sectionAnimated} ${visible ? styles.visible : ''} sectionThemed`}
     >
       <span className={styles.sectionThemedTitle}>{sectionTitles[id]}</span>
-      <svg className="sectionThemedUnderline" viewBox="0 0 90 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 8 Q45 0 85 8" stroke="url(#goldLine)" strokeWidth="3" fill="none"/>
-        <defs>
-          <linearGradient id="goldLine" x1="0" y1="6" x2="90" y2="6" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#ffe3ec"/>
-            <stop offset="0.5" stopColor="#bfa76a"/>
-            <stop offset="1" stopColor="#fffbe6"/>
-          </linearGradient>
-        </defs>
-      </svg>
       {sectionContent[id]}
     </section>
+  );
+}
+
+// Add flowering underline SVG as a React component
+function SectionFlowerUnderline({ targetId }) {
+  // Optionally, you could use targetId to measure width and adjust SVG, but for now, center and size visually
+  return (
+    <svg style={{display:'block', margin:'-0.35em auto 0.25em auto', filter:'drop-shadow(0 2px 12px #bfa76a88)', width:'90%', maxWidth: '340px', minWidth: '120px'}} height="30" viewBox="0 0 140 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15 22 Q70 3 125 22" stroke="url(#goldLine)" strokeWidth="3.5" fill="none" strokeLinecap="round"/>
+      {/* Left flower */}
+      <g>
+        <ellipse cx="15" cy="22" rx="4.2" ry="3.2" fill="url(#petalGradient)"/>
+        <ellipse cx="12" cy="19" rx="1.6" ry="2.8" fill="url(#petalGradient)" transform="rotate(-18 12 19)"/>
+        <ellipse cx="18" cy="19" rx="1.6" ry="2.8" fill="url(#petalGradient)" transform="rotate(18 18 19)"/>
+        <circle cx="15" cy="22" r="1.3" fill="#fffbe6"/>
+      </g>
+      {/* Right flower */}
+      <g>
+        <ellipse cx="125" cy="22" rx="4.2" ry="3.2" fill="url(#petalGradient)"/>
+        <ellipse cx="122" cy="19" rx="1.6" ry="2.8" fill="url(#petalGradient)" transform="rotate(-18 122 19)"/>
+        <ellipse cx="128" cy="19" rx="1.6" ry="2.8" fill="url(#petalGradient)" transform="rotate(18 128 19)"/>
+        <circle cx="125" cy="22" r="1.3" fill="#fffbe6"/>
+      </g>
+      <defs>
+        <linearGradient id="goldLine" x1="0" y1="15" x2="140" y2="15" gradientUnits="userSpaceOnUse">
+          <stop stopColor="#fffbe6"/>
+          <stop offset="0.25" stopColor="#ffe3ec"/>
+          <stop offset="0.5" stopColor="#bfa76a"/>
+          <stop offset="0.75" stopColor="#ffe3ec"/>
+          <stop offset="1" stopColor="#fffbe6"/>
+        </linearGradient>
+        <linearGradient id="petalGradient" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+          <stop stopColor="#ffe3ec"/>
+          <stop offset="1" stopColor="#bfa76a"/>
+        </linearGradient>
+      </defs>
+    </svg>
   );
 }
 
